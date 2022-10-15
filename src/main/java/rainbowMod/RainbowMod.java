@@ -179,12 +179,31 @@ public class RainbowMod implements
         chosenCharacters = strings;
     }
 
-    public static BitmapFont getPanelFont() {
-        return FontHelper.charDescFont;
-    }
+
+
+
 
     @Override
     public void receivePostInitialize() {
         optionsPanel = new RainbowCharSelectPanel();
+    }
+
+
+    //Fonts
+    public static BitmapFont localCharDescFont;
+    public static BitmapFont localEnergyFont;
+
+    public static BitmapFont getPanelFont() {
+        if (localCharDescFont == null) {
+            localCharDescFont = FontHelper.charDescFont;
+        }
+        return localCharDescFont;
+    }
+
+    public static BitmapFont getEnergyFont() {
+        if (localEnergyFont == null) {
+            localEnergyFont = FontHelper.cardEnergyFont_L;
+        }
+        return localEnergyFont;
     }
 }

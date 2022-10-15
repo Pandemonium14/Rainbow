@@ -3,6 +3,7 @@ package rainbowMod.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.audio.SoundMaster;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
@@ -24,9 +25,14 @@ public class NumberSelectPanel {
     private static final Texture RightArrowTexture = ImageMaster.loadImage("images/ui/charSelect/tinyRightArrow.png");
     private Hitbox leftHitbox;
     private Hitbox rightHitbox;
+    boolean lightenLeft = false;
+    boolean lightenRight = false;
 
     public float x;
     public float y;
+
+    private static final Color darkenedColor = new Color(0.8f,0.8f,0.8f,1f);
+    private static final Color localWhite = new Color(1f,1f,1f,1f);
 
     public NumberSelectPanel() {
     }
@@ -38,8 +44,10 @@ public class NumberSelectPanel {
 
     public void update() {
         leftHitbox.update();
-        if (leftHitbox.hovered) {
-
+        if (leftHitbox.hovered && selectedNumber > min) {
+            lightenLeft = true;
+        } else {
+            lightenLeft = false;
         }
         if (leftHitbox.hovered && InputHelper.justReleasedClickLeft) {
             if (selectedNumber > min) {
@@ -48,8 +56,10 @@ public class NumberSelectPanel {
         }
 
         rightHitbox.update();
-        if (rightHitbox.hovered) {
-
+        if (rightHitbox.hovered && selectedNumber < max) {
+            lightenRight = true;
+        } else {
+            lightenRight = false;
         }
         if (rightHitbox.hovered && InputHelper.justReleasedClickLeft) {
             if (selectedNumber < max) {
@@ -59,15 +69,20 @@ public class NumberSelectPanel {
     }
 
     public void render(SpriteBatch sb) {
-        sb.setColor(Color.WHITE);
 
-        FontHelper.renderFont(sb, RainbowMod.getPanelFont(), msg,x,y + 5f,Color.WHITE);
+        FontHelper.renderFont(sb, RainbowMod.getPanelFont(), msg,x,y + 5f,localWhite);
 
-
+        Color drawColor = lightenLeft ? localWhite : darkenedColor;
+        sb.setColor(drawColor);
         sb.draw(LeftArrowTexture,x + 20.0f*Settings.scale,y - LeftArrowTexture.getHeight() * 1.5f);
+
+        drawColor = lightenRight ? localWhite : darkenedColor;
+        sb.setColor(drawColor);
         sb.draw(RightArrowTexture, x + RightArrowTexture.getWidth() * 2+ 20.0f*Settings.scale,y - LeftArrowTexture.getHeight() * 1.5f);
 
-        FontHelper.renderFont(sb, RainbowMod.getPanelFont(), selectedNumber + "", x + RightArrowTexture.getWidth()+ 35.0f*Settings.scale, y - LeftArrowTexture.getHeight() * 0.8f, Color.WHITE);
+        sb.setColor(Color.WHITE);
+
+        FontHelper.renderFont(sb, RainbowMod.getPanelFont(), selectedNumber + "", x + RightArrowTexture.getWidth()+ 35.0f*Settings.scale, y - LeftArrowTexture.getHeight() * 0.8f, localWhite);
 
     }
 }
