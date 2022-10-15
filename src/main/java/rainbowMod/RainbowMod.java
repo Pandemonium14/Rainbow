@@ -13,13 +13,18 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.mod.stslib.Keyword;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.Gson;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.CardGroup;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.localization.CardStrings;
 import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.localization.PowerStrings;
 import com.megacrit.cardcrawl.localization.RelicStrings;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
+import org.apache.logging.log4j.Level;
 import rainbowMod.cards.AbstractEasyCard;
 import rainbowMod.cards.cardvars.SecondDamage;
 import rainbowMod.cards.cardvars.SecondMagicNumber;
@@ -27,6 +32,7 @@ import rainbowMod.relics.AbstractEasyRelic;
 import rainbowMod.ui.RainbowCharSelectPanel;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @SpireInitializer
@@ -36,8 +42,10 @@ public class RainbowMod implements
         EditStringsSubscriber,
         EditKeywordsSubscriber,
         EditCharactersSubscriber,
-        CustomSavable<String[]>,
-        PostInitializeSubscriber {
+        CustomSavable<ArrayList<AbstractCard.CardColor>>,
+        PostInitializeSubscriber,
+        PostCreateStartingDeckSubscriber,
+        StartGameSubscriber {
 
     public static RainbowCharSelectPanel optionsPanel = null;
 
@@ -63,7 +71,7 @@ public class RainbowMod implements
     private static final String CARD_ENERGY_L = modID + "Resources/images/1024/energy.png";
     private static final String CHARSELECT_BUTTON = modID + "Resources/images/charSelect/charButton.png";
     private static final String CHARSELECT_PORTRAIT = modID + "Resources/images/charSelect/charBG.png";
-    public static String[] chosenCharacters = new String[0];
+    public static ArrayList<AbstractCard.CardColor> selectedColors = new ArrayList<>();
 
     public static Settings.GameLanguage[] SupportedLanguages = {
             Settings.GameLanguage.ENG,
@@ -170,13 +178,19 @@ public class RainbowMod implements
     }
 
     @Override
-    public String[] onSave() {
-        return chosenCharacters;
+    public ArrayList<AbstractCard.CardColor> onSave() {
+        return selectedColors;
     }
 
     @Override
-    public void onLoad(String[] strings) {
-        chosenCharacters = strings;
+    public void onLoad(ArrayList<AbstractCard.CardColor> colors) {
+        BaseMod.logger.log(Level.INFO, "Loading the save's selected colors: " + colors.toString());
+        if (AbstractDungeon.player.chosenClass == TheRainbow.Enums.THE_RAINBOW) {
+            BaseMod.logger.info("Trying to fill the pools");
+            selectedColors = colors;
+            optionsPanel.makePools(selectedColors);
+            BaseMod.logger.info("Filled the pools");
+        }
     }
 
 
@@ -186,6 +200,8 @@ public class RainbowMod implements
     @Override
     public void receivePostInitialize() {
         optionsPanel = new RainbowCharSelectPanel();
+
+        BaseMod.addSaveField("RainbowSelectedColors", this);
     }
 
 
@@ -205,5 +221,21 @@ public class RainbowMod implements
             localEnergyFont = FontHelper.cardEnergyFont_L;
         }
         return localEnergyFont;
+    }
+
+    @Override
+    public void receivePostCreateStartingDeck(AbstractPlayer.PlayerClass playerClass, CardGroup cardGroup) {
+        if (playerClass == TheRainbow.Enums.THE_RAINBOW) {
+            optionsPanel.makePools(cardGroup);
+            optionsPanel.triggerPerks();
+        }
+    }
+
+    @Override
+    public void receiveStartGame() {
+        if (AbstractDungeon.player.chosenClass == TheRainbow.Enums.THE_RAINBOW) {
+            BaseMod.logger.info("Trying to fill the pools again");
+            optionsPanel.makePools(selectedColors);
+        }
     }
 }

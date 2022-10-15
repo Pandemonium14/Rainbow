@@ -104,7 +104,7 @@ public class TheRainbow extends CustomPlayer {
 
     @Override
     public AbstractCard.CardColor getCardColor() {
-        return RAINBOW_CARD_COLOR;
+        return AbstractCard.CardColor.RED;
     }
 
     @Override

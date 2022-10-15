@@ -50,6 +50,12 @@ public class PerkSelectPanel {
         }
     }
 
+    public void triggerPerks() {
+        for (AbstractPerkItem item : items) {
+            if (item.enabled) item.trigger();
+        }
+    }
+
     public void update() {
         for (AbstractPerkItem item : items) {
             item.receiveAvailablePerkPoints(totalPoints - usedPoints);

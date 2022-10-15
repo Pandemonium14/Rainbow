@@ -31,6 +31,8 @@ public abstract class AbstractPerkItem {
         availablePoints = points;
     }
 
+    public abstract void trigger();
+
     public void update() {
         checkmarkHitbox.update();
         if (checkmarkHitbox.hovered && InputHelper.justReleasedClickLeft) {
