@@ -4,6 +4,7 @@ import basemod.helpers.BaseModCardTags;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
+import com.megacrit.cardcrawl.cards.curses.AscendersBane;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -20,9 +21,11 @@ public class RainbowCharSelectPanel {
     private NumberSelectPanel numberPanel;
     private PerkSelectPanel perkPanel;
     public ArrayList<String> relicList = new ArrayList<>();
+    public int charNum;
 
     public RainbowCharSelectPanel() {
 
+        charNum = makeCharNum();
 
         numberPanel = new NumberSelectPanel();
         numberPanel.x = Settings.WIDTH/2.0f - 200f;
@@ -30,12 +33,22 @@ public class RainbowCharSelectPanel {
         numberPanel.initializeHitboxes();
         numberPanel.min = 2;
         numberPanel.selectedNumber = 2;
-        numberPanel.max = CardCrawlGame.characterManager.getAllCharacters().size() - 1;
+        numberPanel.max = charNum;
 
         perkPanel = new PerkSelectPanel();
         perkPanel.x = Settings.WIDTH/2.0f + 300f;
         perkPanel.y = Settings.HEIGHT/2.0f + 300f;
         perkPanel.initializeHitboxes();
+    }
+
+    private int makeCharNum() {
+        int retVal = 0;
+        for (AbstractPlayer p : CardCrawlGame.characterManager.getAllCharacters()) {
+            if (!(p instanceof TheRainbow) && CharacterTickbox.isEnabled(p)) {
+                retVal ++;
+            }
+        }
+        return retVal;
     }
 
     public int getAvailablePoints() {
@@ -50,7 +63,7 @@ public class RainbowCharSelectPanel {
         ArrayList<AbstractPlayer> selectedChars = new ArrayList<>();
         ArrayList<AbstractPlayer> charList = new ArrayList<>();
         for (AbstractPlayer ch : CardCrawlGame.characterManager.getAllCharacters()) {
-            if (!(ch instanceof TheRainbow)) charList.add(ch);
+            if (!(ch instanceof TheRainbow) && CharacterTickbox.isEnabled(ch)) charList.add(ch);
         }
         while (selectedChars.size() < numberPanel.selectedNumber) {
             int r = AbstractDungeon.cardRng.random(charList.size()-1);
@@ -99,6 +112,10 @@ public class RainbowCharSelectPanel {
                 otherCount++;
             }
             sumOfDeck.remove(c);
+        }
+
+        if (AbstractDungeon.ascensionLevel >= 10) {
+            startingDeck.addToTop(new AscendersBane());
         }
     }
 

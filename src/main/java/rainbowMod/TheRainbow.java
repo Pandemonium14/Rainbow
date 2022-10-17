@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.EnergyManager;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ScreenShake;
@@ -61,7 +62,7 @@ public class TheRainbow extends CustomPlayer {
     @Override
     public CharSelectInfo getLoadout() {
         return new CharSelectInfo(NAMES[0], TEXT[0],
-                70, 70, 2, 99, 5, this, getStartingRelics(),
+                75, 75, 3, 99, 5, this, getStartingRelics(),
                 getStartingDeck(), false);
     }
 
@@ -97,7 +98,12 @@ public class TheRainbow extends CustomPlayer {
 
     @Override
     public AbstractCard.CardColor getCardColor() {
-        return AbstractCard.CardColor.RED;
+        if (selectedColors != null && selectedColors.size() > 0) {
+            int r = AbstractDungeon.cardRng.random(selectedColors.size() - 1);
+            return selectedColors.get(r);
+        } else {
+            return AbstractCard.CardColor.RED;
+        }
     }
 
     @Override

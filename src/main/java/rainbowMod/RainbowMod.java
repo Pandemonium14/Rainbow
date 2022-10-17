@@ -25,6 +25,7 @@ import rainbowMod.cards.AbstractEasyCard;
 import rainbowMod.cards.cardvars.SecondDamage;
 import rainbowMod.cards.cardvars.SecondMagicNumber;
 import rainbowMod.relics.AbstractEasyRelic;
+import rainbowMod.ui.CharacterTickbox;
 import rainbowMod.ui.RainbowCharSelectPanel;
 
 import java.nio.charset.StandardCharsets;
@@ -44,6 +45,7 @@ public class RainbowMod implements
         StartGameSubscriber {
 
     public static RainbowCharSelectPanel optionsPanel = null;
+    public static CharacterTickbox characterTickboxes = null;
 
     public static final String modID = "RainbowMod"; //TODO: Change this.
 
@@ -67,6 +69,7 @@ public class RainbowMod implements
     private static final String CARD_ENERGY_L = modID + "Resources/images/1024/energy.png";
     private static final String CHARSELECT_BUTTON = modID + "Resources/images/charSelect/charButton.png";
     private static final String CHARSELECT_PORTRAIT = modID + "Resources/images/charSelect/charBG.png";
+
     public static ArrayList<AbstractCard.CardColor> selectedColors = new ArrayList<>();
 
     public static Settings.GameLanguage[] SupportedLanguages = {
@@ -198,6 +201,7 @@ public class RainbowMod implements
     @Override
     public void receivePostInitialize() {
         optionsPanel = new RainbowCharSelectPanel();
+        characterTickboxes = new CharacterTickbox();
 
         BaseMod.addSaveField("RainbowSelectedColors", this);
     }

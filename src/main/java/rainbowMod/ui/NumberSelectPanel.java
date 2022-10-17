@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import rainbowMod.RainbowMod;
+import rainbowMod.patches.CharSelectPanelsHooks;
 
 import java.util.Set;
 
@@ -47,6 +48,7 @@ public class NumberSelectPanel {
     }
 
     public void update() {
+        updateMaximum();
         leftHitbox.update();
         if (leftHitbox.hovered && selectedNumber > min) {
             lightenLeft = true;
@@ -69,6 +71,13 @@ public class NumberSelectPanel {
             if (selectedNumber < max) {
                 selectedNumber++;
             }
+        }
+    }
+
+    private void updateMaximum() {
+        max = RainbowMod.optionsPanel.charNum;
+        if (selectedNumber > max) {
+            selectedNumber = max;
         }
     }
 

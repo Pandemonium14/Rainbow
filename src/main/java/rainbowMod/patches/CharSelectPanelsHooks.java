@@ -18,6 +18,8 @@ public class CharSelectPanelsHooks {
         public static void updateCharOption(CharacterOption __instance) {
             if (__instance.c instanceof TheRainbow) {
                 RainbowMod.optionsPanel.update();
+            } else if (__instance.selected) {
+                RainbowMod.characterTickboxes.update(__instance.c);
             }
         }
     }
@@ -29,6 +31,8 @@ public class CharSelectPanelsHooks {
         public static void updateCharOption(CharacterOption __instance, SpriteBatch sb) {
             if (__instance.c instanceof TheRainbow) {
                 RainbowMod.optionsPanel.render(sb);
+            } else if (__instance.selected){
+                RainbowMod.characterTickboxes.render(sb);
             }
         }
     }

@@ -11,6 +11,8 @@ import rainbowMod.RainbowMod;
 
 public abstract class AbstractPerkItem {
 
+    private static final Texture BOX_TEXTURE = ImageMaster.loadImage(RainbowMod.makeImagePath("ui/rainbowCheckmark.png"));
+    private static final Texture CHECK_TEXTURE = ImageMaster.loadImage(RainbowMod.makeImagePath("ui/greenTick.png"));
 
     private String description;
     public int cost = 0;

@@ -19,6 +19,7 @@ public class PerkSelectPanel {
 
     private static final float Y_OFFSET = 75f;
 
+
     private static final UIStrings strings = CardCrawlGame.languagePack.getUIString(RainbowMod.makeID("PerkSelectPanel"));
 
     public String title = "Perks:";
