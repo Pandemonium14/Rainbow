@@ -33,6 +33,8 @@ public abstract class AbstractPerkItem {
 
     public abstract void trigger();
 
+    public void alwaysTrigger() {}
+
     public void update() {
         checkmarkHitbox.update();
         if (checkmarkHitbox.hovered && InputHelper.justReleasedClickLeft) {

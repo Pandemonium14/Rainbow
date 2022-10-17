@@ -2,18 +2,24 @@ package rainbowMod.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.localization.UIStrings;
 import rainbowMod.RainbowMod;
+import rainbowMod.ui.perkItems.MaxHealthPerk;
 import rainbowMod.ui.perkItems.PrayerWheelPerk;
 import rainbowMod.ui.perkItems.QuestionCardPerk;
+import rainbowMod.ui.perkItems.StarterRelicPerk;
 
 import java.util.ArrayList;
 
 public class PerkSelectPanel {
 
     private static final float Y_OFFSET = 75f;
+
+    private static final UIStrings strings = CardCrawlGame.languagePack.getUIString(RainbowMod.makeID("PerkSelectPanel"));
 
     public String title = "Perks:";
     public int totalPoints = 0;
@@ -25,8 +31,11 @@ public class PerkSelectPanel {
     public float y;
 
     public PerkSelectPanel() {
-        items.add(new PrayerWheelPerk());
+        items.add(new StarterRelicPerk());
         items.add(new QuestionCardPerk());
+        items.add(new PrayerWheelPerk());
+
+        items.add(new MaxHealthPerk());
     }
 
     public void initializeHitboxes() {
@@ -53,6 +62,7 @@ public class PerkSelectPanel {
     public void triggerPerks() {
         for (AbstractPerkItem item : items) {
             if (item.enabled) item.trigger();
+            item.alwaysTrigger();
         }
     }
 
@@ -71,9 +81,9 @@ public class PerkSelectPanel {
     }
 
     public void render(SpriteBatch sb) {
-        FontHelper.renderFont(sb, RainbowMod.getEnergyFont(), title, x, y + 10f, Color.WHITE);
+        FontHelper.renderFont(sb, RainbowMod.getEnergyFont(), strings.TEXT[0], x, y + 10f, Color.WHITE);
 
-        FontHelper.renderFont(sb, RainbowMod.getEnergyFont(), totalPoints-usedPoints + " points left", x +180f, y +10f, Color.WHITE);
+        FontHelper.renderFont(sb, RainbowMod.getEnergyFont(), totalPoints-usedPoints + strings.EXTRA_TEXT[0], x +180f, y +10f, Color.WHITE);
         int offsetMult = 1;
         for (AbstractPerkItem item : items) {
             item.render(sb, x, y - Y_OFFSET * offsetMult);

@@ -4,16 +4,20 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.audio.SoundMaster;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import com.megacrit.cardcrawl.localization.UIStrings;
 import rainbowMod.RainbowMod;
 
 import java.util.Set;
 
 public class NumberSelectPanel {
+
+    private static final UIStrings strings = CardCrawlGame.languagePack.getUIString(RainbowMod.makeID("NumberSelectPanel"));
 
     public int selectedNumber;
     public int min;
@@ -70,7 +74,7 @@ public class NumberSelectPanel {
 
     public void render(SpriteBatch sb) {
 
-        FontHelper.renderFont(sb, RainbowMod.getPanelFont(), msg,x,y + 5f,localWhite);
+        FontHelper.renderFont(sb, RainbowMod.getPanelFont(), strings.TEXT[0],x,y + 5f,localWhite);
 
         Color drawColor = lightenLeft ? localWhite : darkenedColor;
         sb.setColor(drawColor);

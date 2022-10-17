@@ -1,6 +1,5 @@
 package rainbowMod.ui;
 
-import basemod.BaseMod;
 import basemod.helpers.BaseModCardTags;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -15,12 +14,12 @@ import rainbowMod.TheRainbow;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 
 public class RainbowCharSelectPanel {
 
     private NumberSelectPanel numberPanel;
     private PerkSelectPanel perkPanel;
+    public ArrayList<String> relicList = new ArrayList<>();
 
     public RainbowCharSelectPanel() {
 
@@ -29,8 +28,8 @@ public class RainbowCharSelectPanel {
         numberPanel.x = Settings.WIDTH/2.0f - 200f;
         numberPanel.y = Settings.HEIGHT/2.0f + 100f;
         numberPanel.initializeHitboxes();
-        numberPanel.min = 1;
-        numberPanel.selectedNumber = 1;
+        numberPanel.min = 2;
+        numberPanel.selectedNumber = 2;
         numberPanel.max = CardCrawlGame.characterManager.getAllCharacters().size() - 1;
 
         perkPanel = new PerkSelectPanel();
@@ -39,11 +38,15 @@ public class RainbowCharSelectPanel {
         perkPanel.initializeHitboxes();
     }
 
+    public int getAvailablePoints() {
+        return perkPanel.totalPoints - perkPanel.usedPoints;
+    }
+
     public void triggerPerks() {
         perkPanel.triggerPerks();
     }
 
-    public void makePools(CardGroup startingDeck) {
+    public void onNewGame(CardGroup startingDeck) {
         ArrayList<AbstractPlayer> selectedChars = new ArrayList<>();
         ArrayList<AbstractPlayer> charList = new ArrayList<>();
         for (AbstractPlayer ch : CardCrawlGame.characterManager.getAllCharacters()) {
@@ -55,33 +58,14 @@ public class RainbowCharSelectPanel {
             charList.remove(r);
         }
 
-        AbstractDungeon.commonCardPool.clear();
-        AbstractDungeon.uncommonCardPool.clear();
-        AbstractDungeon.rareCardPool.clear();
         RainbowMod.selectedColors.clear();
-
         ArrayList<String> sumOfStartingDeck = new ArrayList<>();
         for (AbstractPlayer p : selectedChars) {
             AbstractCard.CardColor color = p.getCardColor();
             RainbowMod.selectedColors.add(color);
-            ArrayList<AbstractCard> cardPool = new ArrayList<>();
-
-            for (Map.Entry<String,AbstractCard> c : CardLibrary.cards.entrySet()) {
-                if (c.getValue().color == color) {
-                    cardPool.add(c.getValue());
-                }
+            if (p.getStartingRelics().size()>0) {
+                relicList.add(p.getStartingRelics().get(0));
             }
-
-            for (AbstractCard c : cardPool) {
-                if (c.rarity == AbstractCard.CardRarity.UNCOMMON) {
-                    AbstractDungeon.uncommonCardPool.group.add(c);
-                } else if (c.rarity == AbstractCard.CardRarity.COMMON) {
-                    AbstractDungeon.commonCardPool.group.add(c);
-                } else {
-                    AbstractDungeon.rareCardPool.group.add(c);
-                }
-            }
-
             sumOfStartingDeck.addAll(p.getStartingDeck());
         }
 
@@ -100,12 +84,16 @@ public class RainbowCharSelectPanel {
         while (startingDeck.size() < 10) {
             int r = AbstractDungeon.cardRng.random(sumOfDeck.size()-1);
             AbstractCard c = sumOfDeck.get(r);
-            if ((c.hasTag(AbstractCard.CardTags.STARTER_STRIKE) || c.hasTag(BaseModCardTags.BASIC_STRIKE)) && strikeCount < 4) {
-                startingDeck.addToBottom(c.makeCopy());
-                strikeCount ++;
-            } else if ((c.hasTag(AbstractCard.CardTags.STARTER_DEFEND) || c.hasTag(BaseModCardTags.BASIC_DEFEND)) && defendCount < 4) {
-                startingDeck.group.add(strikeCount, c.makeCopy());
-                defendCount ++;
+            if ((c.hasTag(AbstractCard.CardTags.STARTER_STRIKE) || c.hasTag(BaseModCardTags.BASIC_STRIKE))) {
+                if (strikeCount < 4) {
+                    startingDeck.addToBottom(c.makeCopy());
+                    strikeCount++;
+                }
+            } else if ((c.hasTag(AbstractCard.CardTags.STARTER_DEFEND) || c.hasTag(BaseModCardTags.BASIC_DEFEND))) {
+                if (defendCount < 4) {
+                    startingDeck.group.add(strikeCount, c.makeCopy());
+                    defendCount++;
+                }
             } else if (otherCount < 2) {
                 startingDeck.addToTop(c.makeCopy());
                 otherCount++;
@@ -123,7 +111,7 @@ public class RainbowCharSelectPanel {
         for (AbstractCard.CardColor color : colors) {
             ArrayList<AbstractCard> cardPool = new ArrayList<>();
             for (Map.Entry<String, AbstractCard> c : CardLibrary.cards.entrySet()) {
-                if (c.getValue().color == color) {
+                if (c.getValue().color == color && c.getValue().rarity != AbstractCard.CardRarity.BASIC && c.getValue().rarity != AbstractCard.CardRarity.SPECIAL) {
                     cardPool.add(c.getValue());
                 }
             }

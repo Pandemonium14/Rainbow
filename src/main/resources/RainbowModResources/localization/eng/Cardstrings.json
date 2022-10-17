@@ -52,5 +52,9 @@
   "${ModID}:TwoTypesOfDamage": {
     "NAME": "Two Types of Damage",
     "DESCRIPTION": "Deal !D! damage. NL If you're Vulnerable, deal !${ModID}:sd! damage instead."
+  },
+  "${ModID}:PrismaticEye": {
+    "NAME": "Prismatic Eye",
+    "DESCRIPTION": "Scry !M!. NL Draw !M! cards."
   }
 }

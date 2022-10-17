@@ -1,0 +1,36 @@
+{
+  "${ModID}:NumberSelectPanel": {
+    "TEXT": [
+      "Number of characters"
+    ],
+    "EXTRA_TEXT": []
+  },
+  "${ModID}:PerkSelectPanel": {
+    "TEXT": [
+      "Perks:"
+    ],
+    "EXTRA_TEXT": [
+      " perk points left."
+    ]
+  },
+  "${ModID}:MaxHealthPerk": {
+    "TEXT": [
+      "Every unspent point is converted to 2 Max HP."
+    ]
+  },
+  "${ModID}:PrayerWheelPerk": {
+    "TEXT": [
+      "Start with a Prayer Wheel."
+    ]
+  },
+  "${ModID}:QuestionCardPerk": {
+    "TEXT": [
+      "Start with a Question Card."
+    ]
+  },
+  "${ModID}:StarterRelicPerk": {
+    "TEXT": [
+      "Start with an additional Starter relic."
+    ]
+  }
+}

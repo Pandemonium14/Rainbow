@@ -9,6 +9,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.red.Defend_Red;
+import com.megacrit.cardcrawl.cards.red.Strike_Red;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.EnergyManager;
@@ -18,13 +20,9 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ScreenShake;
 import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
-import rainbowMod.cards.Defend;
-import rainbowMod.cards.Strike;
-import rainbowMod.relics.TodoItem;
 
 import java.util.ArrayList;
 
-import static rainbowMod.TheRainbow.Enums.RAINBOW_CARD_COLOR;
 import static rainbowMod.RainbowMod.*;
 
 public class TheRainbow extends CustomPlayer {
@@ -63,25 +61,20 @@ public class TheRainbow extends CustomPlayer {
     @Override
     public CharSelectInfo getLoadout() {
         return new CharSelectInfo(NAMES[0], TEXT[0],
-                80, 80, 0, 99, 5, this, getStartingRelics(),
+                70, 70, 2, 99, 5, this, getStartingRelics(),
                 getStartingDeck(), false);
     }
 
     @Override
     public ArrayList<String> getStartingDeck() {
         ArrayList<String> retVal = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            retVal.add(Strike.ID);
-        }
-        for (int i = 0; i < 4; i++) {
-            retVal.add(Defend.ID);
-        }
+        retVal.add(Strike_Red.ID);
+        retVal.add(Defend_Red.ID);
         return retVal;
     }
 
     public ArrayList<String> getStartingRelics() {
         ArrayList<String> retVal = new ArrayList<>();
-        retVal.add(TodoItem.ID);
         return retVal;
     }
 
