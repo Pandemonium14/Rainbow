@@ -1,9 +1,9 @@
 {
-  "${ModID}:TodoItem": {
-    "NAME": "Todo Item",
-    "FLAVOR": "TODO: make this a sweet relic.",
+  "${ModID}:HealingPerkRelic": {
+    "NAME": "Rainbow's Optimism",
+    "FLAVOR": "A positive outlook can help overcome great obstacles.",
     "DESCRIPTIONS": [
-      "Has no effect."
+      "For the first Act, heal 8 HP at the end of combat."
     ]
   }
 }

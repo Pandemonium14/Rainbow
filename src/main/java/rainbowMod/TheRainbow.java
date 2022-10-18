@@ -21,6 +21,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ScreenShake;
 import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
+import rainbowMod.cards.PrismaticEye;
 
 import java.util.ArrayList;
 
@@ -43,6 +44,8 @@ public class TheRainbow extends CustomPlayer {
     static final CharacterStrings characterStrings = CardCrawlGame.languagePack.getCharacterString(ID);
     static final String[] NAMES = characterStrings.NAMES;
     static final String[] TEXT = characterStrings.TEXT;
+    static AbstractCard.CardColor lastReturnedColor;
+    private int colorReturnCounter = 0;
 
 
     public TheRainbow(String name, PlayerClass setClass) {
@@ -98,8 +101,12 @@ public class TheRainbow extends CustomPlayer {
 
     @Override
     public AbstractCard.CardColor getCardColor() {
-        if (selectedColors != null && selectedColors.size() > 0) {
+        if (lastReturnedColor != null && colorReturnCounter < 4) {
+            return lastReturnedColor;
+        } else if (selectedColors != null && selectedColors.size() > 0) {
             int r = AbstractDungeon.cardRng.random(selectedColors.size() - 1);
+            lastReturnedColor = selectedColors.get(r);
+            colorReturnCounter = 0;
             return selectedColors.get(r);
         } else {
             return AbstractCard.CardColor.RED;
@@ -123,8 +130,7 @@ public class TheRainbow extends CustomPlayer {
 
     @Override
     public AbstractCard getStartCardForEvent() {
-        System.out.println("YOU NEED TO SET getStartCardForEvent() in your " + getClass().getSimpleName() + " file!");
-        return null;
+        return new PrismaticEye();
     }
 
     @Override
@@ -174,5 +180,11 @@ public class TheRainbow extends CustomPlayer {
         @SpireEnum(name = "RAINBOW_COLOR")
         @SuppressWarnings("unused")
         public static CardLibrary.LibraryType LIBRARY_COLOR;
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        colorReturnCounter ++;
     }
 }

@@ -8,10 +8,7 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import rainbowMod.RainbowMod;
-import rainbowMod.ui.perkItems.MaxHealthPerk;
-import rainbowMod.ui.perkItems.PrayerWheelPerk;
-import rainbowMod.ui.perkItems.QuestionCardPerk;
-import rainbowMod.ui.perkItems.StarterRelicPerk;
+import rainbowMod.ui.perkItems.*;
 
 import java.util.ArrayList;
 
@@ -33,6 +30,7 @@ public class PerkSelectPanel {
 
     public PerkSelectPanel() {
         items.add(new StarterRelicPerk());
+        items.add(new HealingPerk());
         items.add(new QuestionCardPerk());
         items.add(new PrayerWheelPerk());
 

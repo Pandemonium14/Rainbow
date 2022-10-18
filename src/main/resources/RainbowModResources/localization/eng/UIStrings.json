@@ -32,5 +32,10 @@
     "TEXT": [
       "Start with an additional Starter relic."
     ]
+  },
+  "${ModID}:HealingPerk": {
+    "TEXT": [
+      "In Act 1, heal 8 HP at the end of each combat."
+    ]
   }
 }

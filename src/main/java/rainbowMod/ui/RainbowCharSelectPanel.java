@@ -36,7 +36,7 @@ public class RainbowCharSelectPanel {
         numberPanel.max = charNum;
 
         perkPanel = new PerkSelectPanel();
-        perkPanel.x = Settings.WIDTH/2.0f + 300f;
+        perkPanel.x = Settings.WIDTH/2.0f + 200f;
         perkPanel.y = Settings.HEIGHT/2.0f + 300f;
         perkPanel.initializeHitboxes();
     }
@@ -124,6 +124,9 @@ public class RainbowCharSelectPanel {
         AbstractDungeon.commonCardPool.clear();
         AbstractDungeon.uncommonCardPool.clear();
         AbstractDungeon.rareCardPool.clear();
+        AbstractDungeon.srcCommonCardPool.clear();
+        AbstractDungeon.srcUncommonCardPool.clear();
+        AbstractDungeon.srcRareCardPool.clear();
 
         for (AbstractCard.CardColor color : colors) {
             ArrayList<AbstractCard> cardPool = new ArrayList<>();
@@ -136,10 +139,13 @@ public class RainbowCharSelectPanel {
             for (AbstractCard c : cardPool) {
                 if (c.rarity == AbstractCard.CardRarity.UNCOMMON) {
                     AbstractDungeon.uncommonCardPool.group.add(c);
+                    AbstractDungeon.srcUncommonCardPool.group.add(c);
                 } else if (c.rarity == AbstractCard.CardRarity.COMMON) {
                     AbstractDungeon.commonCardPool.group.add(c);
+                    AbstractDungeon.srcCommonCardPool.group.add(c);
                 } else {
                     AbstractDungeon.rareCardPool.group.add(c);
+                    AbstractDungeon.srcRareCardPool.group.add(c);
                 }
             }
         }
