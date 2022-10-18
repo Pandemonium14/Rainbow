@@ -69,7 +69,7 @@ public class CharacterTickbox {
             boolean newVal = false;
             boolean changeSuccessful = false;
             try {
-                newVal = !config.getBool(key);
+                newVal = !CharacterTickbox.isEnabled(character);
                 config.setBool(key, newVal);
                 config.save();
                 changeSuccessful = true;
@@ -77,11 +77,7 @@ public class CharacterTickbox {
                 e.printStackTrace();
             }
             if (changeSuccessful) {
-                if (newVal) {
-                    RainbowMod.optionsPanel.charNum ++;
-                } else {
-                    RainbowMod.optionsPanel.charNum --;
-                }
+                RainbowMod.optionsPanel.charNum = RainbowMod.optionsPanel.makeCharNum();
             }
         }
         try {
@@ -89,7 +85,7 @@ public class CharacterTickbox {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        enabled = config.getBool(key);
+        enabled = isEnabled(character);
     }
 
     public void render(SpriteBatch sb) {

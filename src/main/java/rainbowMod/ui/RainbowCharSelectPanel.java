@@ -41,7 +41,7 @@ public class RainbowCharSelectPanel {
         perkPanel.initializeHitboxes();
     }
 
-    private int makeCharNum() {
+    public int makeCharNum() {
         int retVal = 0;
         for (AbstractPlayer p : CardCrawlGame.characterManager.getAllCharacters()) {
             if (!(p instanceof TheRainbow) && CharacterTickbox.isEnabled(p)) {

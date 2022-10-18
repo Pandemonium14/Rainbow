@@ -75,7 +75,7 @@ public class NumberSelectPanel {
     }
 
     private void updateMaximum() {
-        max = RainbowMod.optionsPanel.charNum;
+        max = RainbowMod.optionsPanel.makeCharNum();
         if (selectedNumber > max) {
             selectedNumber = max;
         }
