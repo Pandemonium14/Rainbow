@@ -6,5 +6,13 @@
       " #yStrength and #b",
       " #yDexterity."
     ]
+  },
+  "${ModID}:ImaginationPower": {
+    "NAME": "Imagination",
+    "DESCRIPTIONS": [
+      "At the start of your turn, add a random card from your draw pile to your hand of a color you don't have in your hand.",
+      "At the start of your turn, add #b",
+      " random cards from your draw pile to your hand of a color you don't have in your hand."
+    ]
   }
 }

@@ -38,6 +38,8 @@ public class DispersionAction extends AbstractGameAction {
         }
         acceptedColors.add(AbstractCard.CardColor.COLORLESS);
 
+        if (!acceptedColors.contains(targetCard.color)) acceptedColors.add(targetCard.color);
+
         for (AbstractCard libraryCard : allCards) {
             AbstractCard c = libraryCard.makeCopy();
             if (acceptedColors.contains(c.color) && (targetCard.type == AbstractCard.CardType.STATUS || c.type != AbstractCard.CardType.STATUS) && !c.hasTag(AbstractCard.CardTags.HEALING)) {

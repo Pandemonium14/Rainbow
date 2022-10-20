@@ -66,5 +66,9 @@
     "NAME": "Dispersion",
     "DESCRIPTION": "Exhaust a card in your hand. Add 3 random cards to your hand of the same cost, type and color respectively.",
     "UPGRADE_DESCRIPTION": "Exhaust a card in your hand. Add 3 random Upgraded cards to your hand of the same cost, type and color respectively."
+  },
+  "${ModID}:Imagination": {
+    "NAME": "Imagination",
+    "DESCRIPTION": "At the start of your turn, add a random card from your draw pile to your hand of a color you don't have in hand."
   }
 }
