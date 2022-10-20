@@ -22,6 +22,7 @@ public class RainbowCharSelectPanel {
     private PerkSelectPanel perkPanel;
     public ArrayList<String> relicList = new ArrayList<>();
     public int charNum;
+    public boolean customPool = false;
 
     public RainbowCharSelectPanel() {
 

@@ -56,5 +56,15 @@
   "${ModID}:PrismaticEye": {
     "NAME": "Prismatic Eye",
     "DESCRIPTION": "Scry !M!. NL Draw !M! cards."
+  },
+  "${ModID}:BlankCanvas": {
+    "NAME": "Blank Canvas",
+    "DESCRIPTION": "Shuffle ALL your cards in your draw pile. NL Draw as many cards as there were in your hand. NL Exhaust.",
+    "UPGRADE_DESCRIPTION": "Shuffle ALL your cards in your draw pile. NL Draw as many cards as there were in your hand."
+  },
+  "${ModID}:Dispersion": {
+    "NAME": "Dispersion",
+    "DESCRIPTION": "Exhaust a card in your hand. Add 3 random cards to your hand of the same cost, type and color respectively.",
+    "UPGRADE_DESCRIPTION": "Exhaust a card in your hand. Add 3 random Upgraded cards to your hand of the same cost, type and color respectively."
   }
 }
