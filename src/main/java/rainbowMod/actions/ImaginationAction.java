@@ -35,6 +35,7 @@ public class ImaginationAction extends AbstractGameAction {
             AbstractCard cardToDraw = eligibleCards.get(r);
             if (AbstractDungeon.player.hand.size() < BaseMod.MAX_HAND_SIZE) {
                 AbstractDungeon.player.drawPile.moveToHand(cardToDraw);
+                cardToDraw.triggerWhenDrawn();
             } else {
                 AbstractDungeon.player.drawPile.moveToDiscardPile(cardToDraw);
             }

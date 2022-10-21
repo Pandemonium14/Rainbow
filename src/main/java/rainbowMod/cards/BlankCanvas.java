@@ -10,8 +10,9 @@ public class BlankCanvas extends AbstractEasyCard {
     public static final String ID = RainbowMod.makeID("BlankCanvas");
 
     public BlankCanvas() {
-        super(ID, 0, CardType.SKILL, CardRarity.COMMON, CardTarget.SELF);
+        super(ID, 0, CardType.SKILL, CardRarity.SPECIAL, CardTarget.SELF);
         exhaust = true;
+
     }
 
     @Override

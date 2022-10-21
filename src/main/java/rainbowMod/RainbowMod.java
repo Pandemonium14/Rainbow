@@ -46,6 +46,7 @@ public class RainbowMod implements
 
     public static RainbowCharSelectPanel optionsPanel = null;
     public static CharacterTickbox characterTickboxes = null;
+    public static ArrayList<AbstractCard> rainbowCards = new ArrayList<>();
 
     public static final String modID = "RainbowMod"; //TODO: Change this.
 
@@ -204,6 +205,12 @@ public class RainbowMod implements
         characterTickboxes = new CharacterTickbox();
 
         BaseMod.addSaveField("RainbowSelectedColors", this);
+
+        new AutoAdd(modID).packageFilter("rainbowMod.cards").any(AbstractEasyCard.class, (info, c) -> {
+            if (c.color == TheRainbow.Enums.RAINBOW_CARD_COLOR) {
+                rainbowCards.add(c);
+            }
+        });
     }
 
 
