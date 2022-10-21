@@ -14,5 +14,13 @@
       "At the start of your turn, add #b",
       " random cards from your draw pile to your hand of a color you don't have in your hand."
     ]
+  },
+  "${ModID}:RainbowShellPower": {
+    "NAME": "Rainbow Shell",
+    "DESCRIPTIONS": [
+      "Prevent the next time you are attacked.",
+      "Prevent the next #b",
+      " times you are attacked."
+    ]
   }
 }

@@ -32,5 +32,13 @@
   "${ModID}:UVFlash": {
     "NAME": "UV Flash",
     "DESCRIPTION": "{@@}Apply !M! Weak and Vulnerable{!Upgrades!|>0= to ALL enemies}. NL Draw !M! card{!M!|>1=s}."
+  },
+  "${ModID}:MuddyMix": {
+    "NAME": "Muddy Mix",
+    "DESCRIPTION": "Exhaust any number of cards in your hand. Gain !B! Block and draw 1 card for each different color exhausted. NL Exhaust."
+  },
+  "${ModID}:RainbowShell": {
+    "NAME": "Rainbow Shell",
+    "DESCRIPTION": "{@@}{!Upgrades!|<1=Ethereal. NL }Prevent the next time you are attacked."
   }
 }
