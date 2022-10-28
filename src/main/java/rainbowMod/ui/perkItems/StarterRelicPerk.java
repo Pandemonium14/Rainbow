@@ -19,15 +19,16 @@ public class StarterRelicPerk extends AbstractPerkItem {
 
     @Override
     public void trigger() {
-        int r = AbstractDungeon.cardRng.random(RainbowMod.optionsPanel.relicList.size()-1);
-        String key = RainbowMod.optionsPanel.relicList.get(r);
-        RainbowMod.optionsPanel.relicList.remove(key);
-        AbstractRelic relic = RelicLibrary.getRelic(key).makeCopy();
-        relic.obtain();// 684
-        relic.isObtained = true;// 685
-        relic.isAnimating = false;// 686
-        relic.isDone = false;// 687
-        relic.flash();
+        if (RainbowMod.optionsPanel.relicList.size()>0) {
+            int r = AbstractDungeon.cardRng.random(RainbowMod.optionsPanel.relicList.size() - 1);
+            String key = RainbowMod.optionsPanel.relicList.get(r);
+            RainbowMod.optionsPanel.relicList.remove(key);
+            AbstractRelic relic = RelicLibrary.getRelic(key).makeCopy();
+            relic.obtain();// 684
+            relic.isObtained = true;// 685
+            relic.isAnimating = false;// 686
+            relic.isDone = false;// 687
+        }
     }
 
     @Override

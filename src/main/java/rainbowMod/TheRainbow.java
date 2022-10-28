@@ -1,11 +1,18 @@
 package rainbowMod;
 
+import basemod.BaseMod;
+import basemod.ReflectionHacks;
 import basemod.abstracts.CustomEnergyOrb;
 import basemod.abstracts.CustomPlayer;
+import basemod.animations.AbstractAnimation;
 import basemod.animations.SpriterAnimation;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -15,15 +22,18 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.EnergyManager;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.cutscenes.CutscenePanel;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.ScreenShake;
 import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import rainbowMod.cards.PrismaticEye;
+import rainbowMod.ui.CharacterTickbox;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import static rainbowMod.RainbowMod.*;
 
@@ -46,6 +56,9 @@ public class TheRainbow extends CustomPlayer {
     static final String[] TEXT = characterStrings.TEXT;
     static AbstractCard.CardColor lastReturnedColor;
     private int colorReturnCounter = 0;
+    private AbstractPlayer appearanceCharacter;
+
+
 
 
     public TheRainbow(String name, PlayerClass setClass) {
@@ -171,6 +184,16 @@ public class TheRainbow extends CustomPlayer {
         return TEXT[2];
     }
 
+    public void setupAnimation() {
+        ArrayList<AbstractPlayer> chars = new ArrayList<>();
+        for (AbstractPlayer character : CardCrawlGame.characterManager.getAllCharacters()) {
+            if (character.chosenClass != Enums.THE_RAINBOW && CharacterTickbox.isEnabled(character)) {
+                chars.add(character);
+            }
+        }
+        appearanceCharacter = chars.get(AbstractDungeon.miscRng.random(chars.size()-1));
+    }
+
     public static class Enums {
         //TODO: Change these.
         @SpireEnum
@@ -186,5 +209,107 @@ public class TheRainbow extends CustomPlayer {
     public void update() {
         super.update();
         colorReturnCounter ++;
+        if (appearanceCharacter != null) {
+            appearanceCharacter.updateAnimations();
+        }
+        //updateShader();
+    }
+
+    @Override
+    public void renderPlayerImage(SpriteBatch sb) {
+        sb.setShader(rainbowShader);
+        if (appearanceCharacter == null) {
+            super.renderPlayerImage(sb);
+        } else {
+            sb.setShader(rainbowShader);
+            appearanceCharacter.renderPlayerImage(sb);
+
+        }
+        sb.setShader(null);
+    }
+
+
+
+
+    //Shader stuff
+    public static ShaderProgram rainbowShader;
+    private static float shaderTimer = 0f;
+    private static final float SHADER_STRENGTH = 100f;
+    private static final float SHADER_SPEED = 1f;
+    private static final float SHADER_ANGLE = 0f;
+    private static final float SHADER_WIDTH = Settings.SAVED_WIDTH;
+
+    private static void initShader() {
+        if (rainbowShader == null) {
+            try {
+                rainbowShader = new ShaderProgram(Gdx.files.internal("RainbowModResources/shaders/rainbowShader/vertex.vs"),
+                                                  Gdx.files.internal("RainbowModResources/shaders/rainbowShader/fragment.fs"));
+                if (!rainbowShader.isCompiled()) {
+                    System.err.println(rainbowShader.getLog());
+                }
+                if (rainbowShader.getLog().length() > 0) {
+                    System.out.println(rainbowShader.getLog());
+                }
+                BaseMod.logger.info("============ Just initialized rainbow Shader");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void updateShader() {
+        initShader();
+        if (rainbowShader != null) {
+            rainbowShader.setUniformf("u_time", shaderTimer);
+            rainbowShader.setUniformf("u_strength", SHADER_STRENGTH);
+            rainbowShader.setUniformf("u_speed", SHADER_SPEED);
+            rainbowShader.setUniformf("u_angle", SHADER_ANGLE);
+            rainbowShader.setUniformf("u_width", SHADER_WIDTH);
+        }
+        shaderTimer += Gdx.graphics.getDeltaTime();
+    }
+
+    @Override
+    public List<CutscenePanel> getCutscenePanels() {
+        BaseMod.logger.info("======== Creating Cutscene");
+        List<CutscenePanel> panels = new ArrayList<>();
+        ArrayList<AbstractPlayer> chars = new ArrayList<>(CardCrawlGame.characterManager.getAllCharacters());
+        for (AbstractPlayer ch : chars) {
+            if (selectedColors.contains(ch.getCardColor()) && ch.chosenClass != chosenClass) {
+                BaseMod.logger.info("========= Adding " + ch.chosenClass.name() + " panels...");
+                if (ch instanceof CustomPlayer) {
+                    panels.addAll(((CustomPlayer) ch).getCutscenePanels());
+                } else {
+                    switch(ch.chosenClass) {
+                        case THE_SILENT:
+                            panels.add(new CutscenePanel("images/scenes/silent1.png", "ATTACK_POISON2"));// 37
+                            panels.add(new CutscenePanel("images/scenes/silent2.png"));// 38
+                            panels.add(new CutscenePanel("images/scenes/silent3.png"));// 39
+                            break;// 40
+                        case DEFECT:
+                            panels.add(new CutscenePanel("images/scenes/defect1.png", "ATTACK_MAGIC_BEAM_SHORT"));// 43
+                            panels.add(new CutscenePanel("images/scenes/defect2.png"));// 44
+                            panels.add(new CutscenePanel("images/scenes/defect3.png"));// 45
+                            break;// 46
+                        case WATCHER:
+                            panels.add(new CutscenePanel("images/scenes/watcher1.png", "WATCHER_HEART_PUNCH"));// 49
+                            panels.add(new CutscenePanel("images/scenes/watcher2.png"));// 50
+                            panels.add(new CutscenePanel("images/scenes/watcher3.png"));// 51
+                            break;// 52
+                        default:
+                            panels.add(new CutscenePanel("images/scenes/ironclad1.png", "ATTACK_HEAVY"));// 55
+                            panels.add(new CutscenePanel("images/scenes/ironclad2.png"));// 56
+                            panels.add(new CutscenePanel("images/scenes/ironclad3.png"));// 57
+                    }
+                }
+            }
+        }
+        ArrayList<CutscenePanel> selection = new ArrayList<>();
+        while (selection.size()<4 && panels.size()>0) {
+            int r = AbstractDungeon.miscRng.random(panels.size()-1);
+            selection.add(panels.get(r));
+            panels.remove(r);
+        }
+        return selection;
     }
 }

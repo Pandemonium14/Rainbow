@@ -13,7 +13,6 @@ public class Imagination extends AbstractEasyCard {
 
     public Imagination() {
         super(ID, 1, CardType.POWER, CardRarity.UNCOMMON, CardTarget.SELF);
-
     }
 
     @Override

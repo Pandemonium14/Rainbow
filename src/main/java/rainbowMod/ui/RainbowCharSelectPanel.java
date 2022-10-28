@@ -1,5 +1,6 @@
 package rainbowMod.ui;
 
+import basemod.BaseMod;
 import basemod.helpers.BaseModCardTags;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -65,6 +66,15 @@ public class RainbowCharSelectPanel {
         ArrayList<AbstractPlayer> charList = new ArrayList<>();
         for (AbstractPlayer ch : CardCrawlGame.characterManager.getAllCharacters()) {
             if (!(ch instanceof TheRainbow) && CharacterTickbox.isEnabled(ch)) charList.add(ch);
+        }
+        for (AbstractPlayer ch : CharacterTickbox.forcedChars) {
+            if (selectedChars.size() < numberPanel.selectedNumber) {
+                selectedChars.add(ch);
+                charList.remove(ch);
+            } else {
+                BaseMod.logger.info("Can't add all characters to pools. Please enable more characters on the Rainbow's select screen.");
+                break;
+            }
         }
         while (selectedChars.size() < numberPanel.selectedNumber) {
             int r = AbstractDungeon.cardRng.random(charList.size()-1);

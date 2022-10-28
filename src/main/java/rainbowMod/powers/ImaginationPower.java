@@ -13,6 +13,7 @@ public class ImaginationPower extends AbstractEasyPower {
 
     public ImaginationPower(AbstractPlayer p, int amount) {
         super(ID, strings.NAME, PowerType.BUFF, false, p, amount);
+        loadRegion("curiosity");
     }
 
     @Override

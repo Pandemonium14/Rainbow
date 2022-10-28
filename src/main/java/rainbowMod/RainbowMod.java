@@ -237,6 +237,7 @@ public class RainbowMod implements
         if (playerClass == TheRainbow.Enums.THE_RAINBOW) {
             optionsPanel.onNewGame(cardGroup);
             optionsPanel.triggerPerks();
+            //((TheRainbow)(AbstractDungeon.player)).setupAnimation();
         }
     }
 

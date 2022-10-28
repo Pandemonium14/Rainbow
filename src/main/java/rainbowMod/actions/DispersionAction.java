@@ -42,7 +42,7 @@ public class DispersionAction extends AbstractGameAction {
 
         for (AbstractCard libraryCard : allCards) {
             AbstractCard c = libraryCard.makeCopy();
-            if (acceptedColors.contains(c.color) && (targetCard.type == AbstractCard.CardType.STATUS || c.type != AbstractCard.CardType.STATUS) && !c.hasTag(AbstractCard.CardTags.HEALING)) {
+            if (acceptedColors.contains(c.color) && (targetCard.type == AbstractCard.CardType.STATUS || c.type != AbstractCard.CardType.STATUS) && !c.hasTag(AbstractCard.CardTags.HEALING) && c.rarity!= AbstractCard.CardRarity.SPECIAL) {
                 if (upgraded) {
                     c.upgrade();
                 }
@@ -85,11 +85,12 @@ public class DispersionAction extends AbstractGameAction {
             if (upgraded) cColor.upgrade();
         }
 
-        addToTop(new ExhaustSpecificCardAction(targetCard, AbstractDungeon.player.hand));
 
         addToTop(new MakeTempCardInHandAction(cColor));
         addToTop(new MakeTempCardInHandAction(cType));
         addToTop(new MakeTempCardInHandAction(cCost));
+
+        addToTop(new ExhaustSpecificCardAction(targetCard, AbstractDungeon.player.hand));
 
         isDone = true;
     }

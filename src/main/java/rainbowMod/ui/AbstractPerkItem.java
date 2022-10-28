@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import rainbowMod.RainbowMod;
+import rainbowMod.TheRainbow;
 
 public abstract class AbstractPerkItem {
 
@@ -57,7 +58,6 @@ public abstract class AbstractPerkItem {
 
     public void render(SpriteBatch sb, float x, float y) {
         sb.setColor(Color.WHITE);
-
         FontHelper.renderFontCentered(sb, RainbowMod.getEnergyFont(),cost + "", x, y, costColor, 1f);
         x = x + 20f;
 
