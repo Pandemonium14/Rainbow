@@ -8,9 +8,14 @@ import basemod.animations.AbstractAnimation;
 import basemod.animations.SpriterAnimation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.compression.lzma.Base;
@@ -34,6 +39,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.ScreenShake;
 import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
+import org.w3c.dom.Text;
 import rainbowMod.cards.PrismaticEye;
 import rainbowMod.ui.CharacterTickbox;
 
@@ -61,6 +67,10 @@ public class TheRainbow extends CustomPlayer {
     static AbstractCard.CardColor lastReturnedColor;
     private int colorReturnCounter = 0;
     private AbstractPlayer appearanceCharacter;
+
+
+    private FrameBuffer buffer;
+    private TextureRegion playerTexture;
 
 
 
@@ -195,7 +205,8 @@ public class TheRainbow extends CustomPlayer {
                 chars.add(character);
             }
         }
-        appearanceCharacter = chars.get(AbstractDungeon.miscRng.random(chars.size()-1));
+        appearanceCharacter = chars.get(MathUtils.random(chars.size()-1));
+        appearanceCharacter.maxOrbs = 0;
     }
 
     public static class Enums {
@@ -215,48 +226,49 @@ public class TheRainbow extends CustomPlayer {
         colorReturnCounter ++;
         if (appearanceCharacter != null) {
             appearanceCharacter.updateAnimations();
+            appearanceCharacter.animX = animX;
+            appearanceCharacter.animY = animY;
+            appearanceCharacter.drawX = drawX;
+            appearanceCharacter.drawY = drawY;
         }
         //updateShader();
     }
 
     @Override
     public void renderPlayerImage(SpriteBatch sb) {
-        CardCrawlGame.psb.setShader(rainbowShader);
         updateShader();
+
         if (appearanceCharacter == null) {
             super.renderPlayerImage(sb);
         } else {
             renderAppearance(sb);
-
         }
-        CardCrawlGame.psb.setShader(null);
+
+
     }
 
     private void renderAppearance(SpriteBatch sb) {
-        TextureAtlas atlas = ReflectionHacks.getPrivate(appearanceCharacter, AbstractCreature.class, "atlas");
-        Skeleton skeleton = ReflectionHacks.getPrivate(appearanceCharacter, AbstractCreature.class, "skeleton");
-        if (atlas != null) {// 2156
-            appearanceCharacter.state.update(Gdx.graphics.getDeltaTime());// 2157
-            appearanceCharacter.state.apply(skeleton);// 2158
-            skeleton.updateWorldTransform();// 2159
-            skeleton.setPosition(this.drawX + this.animX, this.drawY + this.animY);// 2160
-            skeleton.setColor(this.tint.color);// 2163
-            skeleton.setFlip(this.flipHorizontal, this.flipVertical);// 2164
-            sb.end();// 2165
-            CardCrawlGame.psb.begin();// 2166
-
-            CardCrawlGame.psb.setShader(rainbowShader);
-            updateShader();
-
-            sr.draw(CardCrawlGame.psb, skeleton);// 2167
-
-            CardCrawlGame.psb.setShader(null);
-
-            CardCrawlGame.psb.end();// 2168
-            sb.begin();// 2169
-        } else {
-            super.renderPlayerImage(sb);
+        sb.flush();
+        if (buffer == null) {
+            buffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
         }
+        buffer.begin();
+        Gdx.gl.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        Gdx.gl.glColorMask(true,true,true,true);
+        appearanceCharacter.renderPlayerImage(sb);
+        sb.flush();
+        buffer.end();
+        if (playerTexture == null) {
+            playerTexture = new TextureRegion(buffer.getColorBufferTexture());
+            playerTexture.flip(false, true);
+        } else {
+            playerTexture.setTexture(buffer.getColorBufferTexture());
+        }
+        sb.setShader(rainbowShader);
+        updateShader();
+        sb.draw(playerTexture,-Settings.VERT_LETTERBOX_AMT, -Settings.HORIZ_LETTERBOX_AMT);
+        sb.setShader(null);
     }
 
 
@@ -265,10 +277,10 @@ public class TheRainbow extends CustomPlayer {
     //Shader stuff
     public static ShaderProgram rainbowShader;
     private static float shaderTimer = 0f;
-    private static final float SHADER_STRENGTH = 0.8f;
-    private static final float SHADER_SPEED = 1f;
+    private static final float SHADER_STRENGTH = 0.7f;
+    private static final float SHADER_SPEED = 0.25f;
     private static final float SHADER_ANGLE = 0f;
-    private static final float SHADER_WIDTH = 900f;
+    private static final float SHADER_WIDTH = 4f;
 
     private static void initShader() {
         if (rainbowShader == null) {
@@ -294,7 +306,7 @@ public class TheRainbow extends CustomPlayer {
             rainbowShader.setUniformf("u_time", shaderTimer);
             rainbowShader.setUniformf("u_strength", SHADER_STRENGTH);
             rainbowShader.setUniformf("u_speed", SHADER_SPEED);
-            rainbowShader.setUniformf("u_angle", SHADER_ANGLE);
+            rainbowShader.setUniformf("u_angle", SHADER_ANGLE + shaderTimer*4f);
             rainbowShader.setUniformf("u_width", SHADER_WIDTH);
         }
         shaderTimer += Gdx.graphics.getDeltaTime();

@@ -238,7 +238,7 @@ public class RainbowMod implements
         if (playerClass == TheRainbow.Enums.THE_RAINBOW) {
             optionsPanel.onNewGame(cardGroup);
             optionsPanel.triggerPerks();
-            ((TheRainbow)(AbstractDungeon.player)).setupAnimation();
+
         }
     }
 
@@ -247,6 +247,7 @@ public class RainbowMod implements
         if (AbstractDungeon.player.chosenClass == TheRainbow.Enums.THE_RAINBOW) {
             BaseMod.logger.info("Trying to fill the pools again");
             optionsPanel.makePools(selectedColors);
+            ((TheRainbow)(AbstractDungeon.player)).setupAnimation();
         }
     }
 
