@@ -10,15 +10,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.compression.lzma.Base;
+import com.esotericsoftware.spine.Skeleton;
 import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.red.Defend_Red;
 import com.megacrit.cardcrawl.cards.red.Strike_Red;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.EnergyManager;
 import com.megacrit.cardcrawl.core.Settings;
@@ -68,7 +72,7 @@ public class TheRainbow extends CustomPlayer {
                 SHOULDER1,
                 SHOULDER2,
                 CORPSE,
-                getLoadout(), 20.0F, -10.0F, 166.0F, 327.0F, new EnergyManager(3));
+                getLoadout(), 20.0F, -10.0F, 250.0F, 327.0F, new EnergyManager(3));
 
 
         dialogX = (drawX + 0.0F * Settings.scale);
@@ -217,15 +221,42 @@ public class TheRainbow extends CustomPlayer {
 
     @Override
     public void renderPlayerImage(SpriteBatch sb) {
-        sb.setShader(rainbowShader);
+        CardCrawlGame.psb.setShader(rainbowShader);
+        updateShader();
         if (appearanceCharacter == null) {
             super.renderPlayerImage(sb);
         } else {
-            sb.setShader(rainbowShader);
-            appearanceCharacter.renderPlayerImage(sb);
+            renderAppearance(sb);
 
         }
-        sb.setShader(null);
+        CardCrawlGame.psb.setShader(null);
+    }
+
+    private void renderAppearance(SpriteBatch sb) {
+        TextureAtlas atlas = ReflectionHacks.getPrivate(appearanceCharacter, AbstractCreature.class, "atlas");
+        Skeleton skeleton = ReflectionHacks.getPrivate(appearanceCharacter, AbstractCreature.class, "skeleton");
+        if (atlas != null) {// 2156
+            appearanceCharacter.state.update(Gdx.graphics.getDeltaTime());// 2157
+            appearanceCharacter.state.apply(skeleton);// 2158
+            skeleton.updateWorldTransform();// 2159
+            skeleton.setPosition(this.drawX + this.animX, this.drawY + this.animY);// 2160
+            skeleton.setColor(this.tint.color);// 2163
+            skeleton.setFlip(this.flipHorizontal, this.flipVertical);// 2164
+            sb.end();// 2165
+            CardCrawlGame.psb.begin();// 2166
+
+            CardCrawlGame.psb.setShader(rainbowShader);
+            updateShader();
+
+            sr.draw(CardCrawlGame.psb, skeleton);// 2167
+
+            CardCrawlGame.psb.setShader(null);
+
+            CardCrawlGame.psb.end();// 2168
+            sb.begin();// 2169
+        } else {
+            super.renderPlayerImage(sb);
+        }
     }
 
 
@@ -234,10 +265,10 @@ public class TheRainbow extends CustomPlayer {
     //Shader stuff
     public static ShaderProgram rainbowShader;
     private static float shaderTimer = 0f;
-    private static final float SHADER_STRENGTH = 100f;
+    private static final float SHADER_STRENGTH = 0.8f;
     private static final float SHADER_SPEED = 1f;
     private static final float SHADER_ANGLE = 0f;
-    private static final float SHADER_WIDTH = Settings.SAVED_WIDTH;
+    private static final float SHADER_WIDTH = 900f;
 
     private static void initShader() {
         if (rainbowShader == null) {
@@ -268,6 +299,9 @@ public class TheRainbow extends CustomPlayer {
         }
         shaderTimer += Gdx.graphics.getDeltaTime();
     }
+
+
+    //end of Shader stuff
 
     @Override
     public List<CutscenePanel> getCutscenePanels() {

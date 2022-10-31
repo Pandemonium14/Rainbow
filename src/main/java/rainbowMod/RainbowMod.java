@@ -42,7 +42,8 @@ public class RainbowMod implements
         CustomSavable<ArrayList<AbstractCard.CardColor>>,
         PostInitializeSubscriber,
         PostCreateStartingDeckSubscriber,
-        StartGameSubscriber {
+        StartGameSubscriber,
+        PostUpdateSubscriber {
 
     public static RainbowCharSelectPanel optionsPanel = null;
     public static CharacterTickbox characterTickboxes = null;
@@ -237,7 +238,7 @@ public class RainbowMod implements
         if (playerClass == TheRainbow.Enums.THE_RAINBOW) {
             optionsPanel.onNewGame(cardGroup);
             optionsPanel.triggerPerks();
-            //((TheRainbow)(AbstractDungeon.player)).setupAnimation();
+            ((TheRainbow)(AbstractDungeon.player)).setupAnimation();
         }
     }
 
@@ -247,5 +248,10 @@ public class RainbowMod implements
             BaseMod.logger.info("Trying to fill the pools again");
             optionsPanel.makePools(selectedColors);
         }
+    }
+
+    @Override
+    public void receivePostUpdate() {
+        //TheRainbow.updateShader();
     }
 }
