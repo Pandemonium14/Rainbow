@@ -12,7 +12,7 @@ public class Imagination extends AbstractEasyCard {
     public static final String ID = RainbowMod.makeID("Imagination");
 
     public Imagination() {
-        super(ID, 1, CardType.POWER, CardRarity.UNCOMMON, CardTarget.SELF);
+        super(ID, 1, CardType.POWER, CardRarity.SPECIAL, CardTarget.SELF);
     }
 
     @Override

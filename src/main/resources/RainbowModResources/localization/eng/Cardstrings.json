@@ -40,5 +40,13 @@
   "${ModID}:RainbowShell": {
     "NAME": "Rainbow Shell",
     "DESCRIPTION": "{@@}{!Upgrades!|<1=Ethereal. NL }Prevent the next time you are attacked."
+  },
+  "${ModID}:ShimmeringBandage": {
+    "NAME": "Shimmering Mend",
+    "DESCRIPTION": "Gain !M! Temporary_HP. NL Gain !M! Regen. NL Exhaust."
+  },
+  "${ModID}:LaserFocus": {
+    "NAME": "Laser Focus",
+    "DESCRIPTION": "{@@} Choose {!M!|1=a card|@=!M! cards} in your draw pile. NL Play and exhaust {!M!|1=it|@=them}. NL Exhaust."
   }
 }

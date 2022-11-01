@@ -12,7 +12,7 @@ public class Dispersion extends AbstractEasyCard {
     public static final String ID = RainbowMod.makeID("Dispersion");
 
     public Dispersion() {
-        super(ID, 0, CardType.SKILL, CardRarity.UNCOMMON, CardTarget.SELF);
+        super(ID, 0, CardType.SKILL, CardRarity.SPECIAL, CardTarget.SELF);
     }
 
     @Override

@@ -37,6 +37,7 @@ import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.ScreenShake;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.CharacterStrings;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import org.w3c.dom.Text;
@@ -201,12 +202,22 @@ public class TheRainbow extends CustomPlayer {
     public void setupAnimation() {
         ArrayList<AbstractPlayer> chars = new ArrayList<>();
         for (AbstractPlayer character : CardCrawlGame.characterManager.getAllCharacters()) {
-            if (character.chosenClass != Enums.THE_RAINBOW && CharacterTickbox.isEnabled(character)) {
+            if (selectedColors.contains(character.getCardColor()) && character.chosenClass != Enums.THE_RAINBOW) {
                 chars.add(character);
             }
         }
-        appearanceCharacter = chars.get(MathUtils.random(chars.size()-1));
-        appearanceCharacter.maxOrbs = 0;
+        int r = MathUtils.random(chars.size()-1);
+        if (appearanceCharacter == null) {
+            appearanceCharacter = chars.get(0);
+        }
+        if (chars.get(r).chosenClass != appearanceCharacter.chosenClass) {
+            appearanceCharacter = chars.get(r);
+        } else if (r != chars.size()-1) {
+            appearanceCharacter = chars.get(r+1);
+        } else {
+            appearanceCharacter = chars.get(0);
+        }
+        changeModel = false;
     }
 
     public static class Enums {
@@ -231,20 +242,17 @@ public class TheRainbow extends CustomPlayer {
             appearanceCharacter.drawX = drawX;
             appearanceCharacter.drawY = drawY;
         }
-        //updateShader();
+        if (hb.hovered && InputHelper.justReleasedClickRight) {
+            RainbowMod.changeModel = true;
+        }
     }
 
     @Override
     public void renderPlayerImage(SpriteBatch sb) {
         updateShader();
-
-        if (appearanceCharacter == null) {
-            super.renderPlayerImage(sb);
-        } else {
+        if (appearanceCharacter != null && !(appearanceCharacter instanceof TheRainbow)) {
             renderAppearance(sb);
         }
-
-
     }
 
     private void renderAppearance(SpriteBatch sb) {
@@ -277,7 +285,7 @@ public class TheRainbow extends CustomPlayer {
     //Shader stuff
     public static ShaderProgram rainbowShader;
     private static float shaderTimer = 0f;
-    private static final float SHADER_STRENGTH = 0.7f;
+    private static final float SHADER_STRENGTH = 0.5f;
     private static final float SHADER_SPEED = 0.25f;
     private static final float SHADER_ANGLE = 0f;
     private static final float SHADER_WIDTH = 4f;

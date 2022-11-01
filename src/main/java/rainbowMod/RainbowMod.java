@@ -43,7 +43,8 @@ public class RainbowMod implements
         PostInitializeSubscriber,
         PostCreateStartingDeckSubscriber,
         StartGameSubscriber,
-        PostUpdateSubscriber {
+        PostUpdateSubscriber,
+        PreDungeonUpdateSubscriber {
 
     public static RainbowCharSelectPanel optionsPanel = null;
     public static CharacterTickbox characterTickboxes = null;
@@ -247,12 +248,21 @@ public class RainbowMod implements
         if (AbstractDungeon.player.chosenClass == TheRainbow.Enums.THE_RAINBOW) {
             BaseMod.logger.info("Trying to fill the pools again");
             optionsPanel.makePools(selectedColors);
-            ((TheRainbow)(AbstractDungeon.player)).setupAnimation();
+            changeModel = true;
         }
     }
 
     @Override
     public void receivePostUpdate() {
         //TheRainbow.updateShader();
+    }
+
+    public static boolean changeModel = false;
+
+    @Override
+    public void receivePreDungeonUpdate() {
+        if (AbstractDungeon.player instanceof TheRainbow && changeModel) {
+            ((TheRainbow) AbstractDungeon.player).setupAnimation();
+        }
     }
 }

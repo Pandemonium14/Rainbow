@@ -32,5 +32,7 @@ void main() {
 		rainbow = vec3(1., 0., x);
 	}
 	vec4 color = texture(u_texture, v_texCoord);
-	gl_FragColor = mix(color, vec4(rainbow, color.a), u_strength);
+	float gray = dot(color, vec4(0.2126, 0.7152, 0.0722, 0));
+	vec4 grayColor = vec4(gray,gray,gray,color.a);
+	gl_FragColor = mix(grayColor, vec4(rainbow, color.a), u_strength);
 }
