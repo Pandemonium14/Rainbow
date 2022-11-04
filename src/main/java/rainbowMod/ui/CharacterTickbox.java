@@ -1,10 +1,13 @@
 package rainbowMod.ui;
 
+import basemod.BaseMod;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
@@ -63,16 +66,24 @@ public class CharacterTickbox {
         }
     }
 
+    public static void redoForcedList() {
+        ArrayList<AbstractPlayer> oldChars = new ArrayList<>(forcedChars);
+        forcedChars.clear();
+        for (AbstractPlayer ch : CardCrawlGame.characterManager.getAllCharacters()) {
+            String chName = ch.getClass().getName();
+            for (AbstractPlayer oldCh : oldChars) {
+                if (chName.equals(oldCh.getClass().getName())) {
+                    forcedChars.add(ch);
+                }
+            }
+        }
+    }
+
     public void update(AbstractPlayer character) {
         String key = character.getClass().getName();
         hb.update();
         forceHb.update();
         boolean oldVal = enabled;
-        if (hb.hovered || forceHb.hovered) {
-            renderColor.a = 1f;
-        } else {
-            renderColor.a = 0.4f;
-        }
         if (hb.hovered && InputHelper.justReleasedClickLeft) {
             boolean newVal = false;
             boolean changeSuccessful = false;
@@ -94,19 +105,30 @@ public class CharacterTickbox {
             e.printStackTrace();
         }
         enabled = isEnabled(character);
+
+        if (hb.hovered || (forceHb.hovered && enabled)) {
+            renderColor.a = 1f;
+        } else {
+            renderColor.a = 0.4f;
+        }
+
+
         forced = forcedChars.contains(character);
         if (enabled) {
             if (forceHb.hovered && InputHelper.justReleasedClickLeft) {
                 if (forced) {
                     forcedChars.remove(character);
                     forced = false;
+                    BaseMod.logger.info("==== Rainbow forced list: "+forcedChars.toString());
                 } else {
                     forcedChars.add(character);
                     forced = true;
+                    BaseMod.logger.info("==== Rainbow forced list: "+forcedChars.toString());
                 }
             }
         } else {
             forcedChars.remove(character);
+            BaseMod.logger.info("==== Rainbow forced list: "+forcedChars.toString());
         }
     }
 

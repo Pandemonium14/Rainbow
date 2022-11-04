@@ -83,6 +83,7 @@ public class RainbowCharSelectPanel {
         }
 
         RainbowMod.selectedColors.clear();
+        relicList.clear();
         ArrayList<String> sumOfStartingDeck = new ArrayList<>();
         for (AbstractPlayer p : selectedChars) {
             AbstractCard.CardColor color = p.getCardColor();

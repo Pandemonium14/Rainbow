@@ -30,8 +30,8 @@ public class PerkSelectPanel {
 
     public PerkSelectPanel() {
         items.add(new StarterRelicPerk());
-        items.add(new HealingPerk());
         items.add(new QuestionCardPerk());
+        items.add(new HealingPerk());
         items.add(new PrayerWheelPerk());
 
         items.add(new MaxHealthPerk());

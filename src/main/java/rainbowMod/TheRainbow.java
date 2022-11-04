@@ -39,6 +39,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.ScreenShake;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.localization.CharacterStrings;
+import com.megacrit.cardcrawl.rooms.RestRoom;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import org.w3c.dom.Text;
 import rainbowMod.cards.PrismaticEye;
@@ -241,15 +242,22 @@ public class TheRainbow extends CustomPlayer {
             appearanceCharacter.animY = animY;
             appearanceCharacter.drawX = drawX;
             appearanceCharacter.drawY = drawY;
+            appearanceCharacter.flipHorizontal = flipHorizontal;
+            appearanceCharacter.flipVertical = flipVertical;
         }
         if (hb.hovered && InputHelper.justReleasedClickRight) {
             RainbowMod.changeModel = true;
         }
+        if (AbstractDungeon.getCurrRoom() != null && AbstractDungeon.getCurrRoom() instanceof RestRoom) {
+            updateShader(true);
+        } else {
+            updateShader();
+        }
     }
+
 
     @Override
     public void renderPlayerImage(SpriteBatch sb) {
-        updateShader();
         if (appearanceCharacter != null && !(appearanceCharacter instanceof TheRainbow)) {
             renderAppearance(sb);
         }
@@ -279,7 +287,34 @@ public class TheRainbow extends CustomPlayer {
         sb.setShader(null);
     }
 
-
+    @Override
+    public void renderShoulderImg(SpriteBatch sb) {
+        if (appearanceCharacter != null) {
+            sb.flush();
+            if (buffer == null) {
+                buffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+            }
+            buffer.begin();
+            Gdx.gl.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+            Gdx.gl.glColorMask(true, true, true, true);
+            appearanceCharacter.renderShoulderImg(sb);
+            sb.flush();
+            buffer.end();
+            if (playerTexture == null) {
+                playerTexture = new TextureRegion(buffer.getColorBufferTexture());
+                playerTexture.flip(false, true);
+            } else {
+                playerTexture.setTexture(buffer.getColorBufferTexture());
+            }
+            sb.setShader(rainbowShader);
+            updateShader(true);
+            sb.draw(playerTexture, -Settings.VERT_LETTERBOX_AMT, -Settings.HORIZ_LETTERBOX_AMT);
+            sb.setShader(null);
+        } else {
+            super.renderShoulderImg(sb);
+        }
+    }
 
 
     //Shader stuff
@@ -289,6 +324,8 @@ public class TheRainbow extends CustomPlayer {
     private static final float SHADER_SPEED = 0.25f;
     private static final float SHADER_ANGLE = 0f;
     private static final float SHADER_WIDTH = 4f;
+    private static final float SHADER_WIDTH_SHOULDER = 0.7f;
+    private static final float SHADER_SPEED_SHOULDER = 0.02f;
 
     private static void initShader() {
         if (rainbowShader == null) {
@@ -309,15 +346,28 @@ public class TheRainbow extends CustomPlayer {
     }
 
     public static void updateShader() {
+        updateShader(false);
+    }
+
+    public static void updateShader(boolean isShoulder) {
         initShader();
         if (rainbowShader != null) {
-            rainbowShader.setUniformf("u_time", shaderTimer);
-            rainbowShader.setUniformf("u_strength", SHADER_STRENGTH);
-            rainbowShader.setUniformf("u_speed", SHADER_SPEED);
-            rainbowShader.setUniformf("u_angle", SHADER_ANGLE + shaderTimer*4f);
-            rainbowShader.setUniformf("u_width", SHADER_WIDTH);
+            if (isShoulder) {
+                rainbowShader.setUniformf("u_time", shaderTimer);
+                rainbowShader.setUniformf("u_strength", SHADER_STRENGTH);
+                rainbowShader.setUniformf("u_speed", SHADER_SPEED_SHOULDER);
+                rainbowShader.setUniformf("u_angle", SHADER_ANGLE + shaderTimer*3f);
+                rainbowShader.setUniformf("u_width", SHADER_WIDTH_SHOULDER);
+                shaderTimer += Gdx.graphics.getDeltaTime();
+            } else {
+                rainbowShader.setUniformf("u_width", SHADER_WIDTH);
+                rainbowShader.setUniformf("u_strength", SHADER_STRENGTH);
+                rainbowShader.setUniformf("u_speed", SHADER_SPEED);
+                rainbowShader.setUniformf("u_angle", SHADER_ANGLE + shaderTimer*4f);
+                shaderTimer += Gdx.graphics.getDeltaTime();
+            }
         }
-        shaderTimer += Gdx.graphics.getDeltaTime();
+
     }
 
 
