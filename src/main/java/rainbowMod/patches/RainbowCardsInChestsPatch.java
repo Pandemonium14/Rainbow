@@ -5,6 +5,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.map.MapRoomNode;
 import com.megacrit.cardcrawl.rewards.RewardItem;
 import com.megacrit.cardcrawl.rewards.chests.AbstractChest;
 import rainbowMod.RainbowMod;
@@ -17,7 +18,8 @@ public class RainbowCardsInChestsPatch {
 
     @SpirePostfixPatch
     public static void onOpenChest() {
-        if (AbstractDungeon.player.chosenClass == TheRainbow.Enums.THE_RAINBOW) {
+        MapRoomNode node = AbstractDungeon.getCurrMapNode();
+        if (AbstractDungeon.player.chosenClass == TheRainbow.Enums.THE_RAINBOW && isInRow(8,node)) {
             AbstractDungeon.combatRewardScreen.rewards.add(makeRainbowReward());
         }
     }
@@ -36,5 +38,11 @@ public class RainbowCardsInChestsPatch {
             rainbowCards.remove(c);
         }
         return reward;
+    }
+
+    private static boolean isInRow(int row, MapRoomNode node) {
+        ArrayList<ArrayList<MapRoomNode>> map = AbstractDungeon.map;
+        ArrayList<MapRoomNode> floor = map.get(row);
+        return floor.contains(node);
     }
 }

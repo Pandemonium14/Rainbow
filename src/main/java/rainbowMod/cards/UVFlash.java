@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.powers.VulnerablePower;
 import com.megacrit.cardcrawl.powers.WeakPower;
 import rainbowMod.RainbowMod;
+import rainbowMod.actions.UVFlashAction;
 
 public class UVFlash extends AbstractEasyCard {
 
@@ -20,19 +21,16 @@ public class UVFlash extends AbstractEasyCard {
 
     @Override
     public void upp() {
-        target = CardTarget.ALL_ENEMY;
+
     }
 
     @Override
     public void use(AbstractPlayer p, AbstractMonster m) {
         if (!upgraded) {
-            addToBot(new ApplyPowerAction(m,p,new VulnerablePower(m, magicNumber, false)));
-            addToBot(new ApplyPowerAction(m,p,new WeakPower(m, magicNumber, false)));
+            addToBot(new UVFlashAction(m,magicNumber));
         } else {
-            for (AbstractMonster mo : AbstractDungeon.getMonsters().monsters) {
-                addToBot(new ApplyPowerAction(mo,p,new VulnerablePower(mo, magicNumber, false)));
-                addToBot(new ApplyPowerAction(mo,p,new WeakPower(mo, magicNumber, false)));
-            }
+            addToBot(new ApplyPowerAction(m,p,new WeakPower(m, magicNumber, false)));
+            addToBot(new ApplyPowerAction(m,p,new VulnerablePower(m, magicNumber, false)));
         }
         addToBot(new DrawCardAction(magicNumber));
     }
