@@ -24,7 +24,7 @@ public class RainbowCardsInChestsPatch {
         }
     }
 
-    private static RewardItem makeRainbowReward() {
+    public static RewardItem makeRainbowReward() {
         int blizz = AbstractDungeon.cardBlizzRandomizer;
         RewardItem reward = new RewardItem();
         AbstractDungeon.cardBlizzRandomizer = blizz;

@@ -47,6 +47,10 @@
   },
   "${ModID}:LaserFocus": {
     "NAME": "Laser Focus",
-    "DESCRIPTION": "{@@} Choose {!M!|1=a card|@=!M! cards} in your draw pile. NL Play and exhaust {!M!|1=it|@=them}. NL Exhaust."
+    "DESCRIPTION": "{@@}Choose {!M!|1=a card|@=!M! cards} in your draw pile. NL Play and exhaust {!M!|1=it|@=them}. NL Exhaust."
+  },
+  "${ModID}:Synthesis": {
+    "NAME": "Synthesis",
+    "DESCRIPTION": "{@@}Exhaust up to 2 cards in your hand. NL Add {!M!|1=a|@=!M!} *Miracle to your hand. Upgrade {!M!|1=it|@=them} if you exhausted {!Upgrades!|0=2 cards|@=a card}."
   }
 }
